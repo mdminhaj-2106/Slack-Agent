@@ -1,0 +1,36 @@
+name: Feature request
+description: Propose a new feature or enhancement.
+labels: ["feature", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What user need or pain point does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: "- [ ] \n- [ ] "
+    validations:
+      required: true
+  - type: dropdown
+    id: track
+    attributes:
+      label: Track
+      options: [bot, api, infra, docs, qa]
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options: [critical, high, medium, low]
