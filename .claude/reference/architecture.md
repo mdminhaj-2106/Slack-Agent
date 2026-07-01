@@ -38,3 +38,15 @@ flowchart TD
 ## Known architectural risks
 - The Socket Mode connection runs in a daemon thread with no supervision — if `handler.start()` raises or the connection drops permanently, nothing restarts it and `/health` will keep reporting fine even though the bot is dead. Add a watchdog before relying on `/health` as a liveness signal for the Slack side.
 - `main.py` is a single file; per `docs/Intitial-research.md`, upcoming layers (classifier, Canvas writer, verifier) should live in separate modules rather than being appended here.
+
+## Planned module split (per milestone — see `PRD.md` Roadmap)
+| Milestone | New module | Owns | Must not touch |
+|-----------|-----------|------|----------------|
+| M0 | (none — config only) | Agents & AI Apps scopes, `action_token` test call | — |
+| M1a | `classifier.py` | Gemini call: message text → decision/commitment/none + confidence | Never persists message text itself |
+| M1a | `canvas.py` | `canvases.create`/`canvases.edit`/`canvases.sections.lookup` — writes pointer records only | Must reject any write containing raw message text or an LLM-generated sentence |
+| M1a | `handlers.py` | `message`/`app_mention` listener → classifier → ephemeral Block Kit confirm → on confirm, `canvas.py` write | Long-running work (Gemini call, Canvas write) must not block the ack |
+| M1b | `retrieval.py` | `/why` flow: `app_mention`/DM → `action_token` → `assistant.search.context` → ranked permalinks | Cannot be called outside an event payload that carries an `action_token` |
+| M2 | `verifier.py` | Scheduled follow-up, evidence search + NLI entailment, status updates on pointer records | Only ever nudges privately; never posts publicly on behalf of a user |
+
+Each new module is added only when its milestone starts — don't scaffold ahead of the current milestone (see Code Rules in `CONSTITUTION.md`).

@@ -13,7 +13,9 @@ Slack-side: bot token + app token + signing secret, loaded from `.env` at startu
 | Data | Where | Notes |
 |------|-------|-------|
 | Slack tokens | `.env` (gitignored) | Never log these; `main.py` does not currently log token values |
+| `GEMINI_API_KEY` (from M1a) | `.env` (gitignored) | Same handling as Slack tokens — never log, never commit |
 | Future: message content | Must never be persisted — per `docs/Intitial-research.md`, only evidence pointers (permalink + `ts` + channel id) may be stored at rest |
+| Future: message text sent to Gemini for classification | In-flight only, at classification time | Not persisted by Recorder; Gemini API's own data-retention policy applies to the request itself — acceptable for a hackathon build, revisit before any real/production use |
 
 ## Input validation rules
 Slack event payloads use `.get()` with defaults (`main.py:57-59`) rather than direct indexing — keep this pattern for all future event handlers since Slack payload shape varies by event type.
@@ -29,7 +31,7 @@ Slack event payloads use `.get()` with defaults (`main.py:57-59`) rather than di
 N/A — `/health` is the only endpoint and returns no sensitive data.
 
 ## Secrets management rules
-Never commit `.env`. Never log `BOT_TOKEN`/`APP_TOKEN`/`SIGNING_SECRET` values. Rotate tokens if ever exposed (e.g. accidental commit, pasted into a chat).
+Never commit `.env`. Never log `BOT_TOKEN`/`APP_TOKEN`/`SIGNING_SECRET`/`GEMINI_API_KEY` values. Rotate tokens if ever exposed (e.g. accidental commit, pasted into a chat).
 
 ## Audit log requirements
 None yet — becomes relevant once the Canvas pointer store and commitment verifier exist (per PRD, those need an append-only audit trail: superseded decisions link forward rather than being rewritten).

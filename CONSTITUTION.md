@@ -4,7 +4,8 @@
 - Product: Recorder — a transparent, peer-toned Slack agent that captures decisions, commitments, and blockers at the moment they're spoken, and later verifies whether they were followed through.
 - Users: Teams working in Slack who lose rationale/decisions to scattered threads and wikis that "go to be forgotten."
 - Problem: ADRs/Confluence/Notion fail because capture is a separate destination task divorced from where work happens. Recorder captures in-flow and retrieves in-flow (`/why [topic]`).
-- Phase: MVP (single-file starter bot — `app_mention` → "hello" — proving the Slack↔FastAPI chain works before real detection logic is added).
+- Phase: M0 (platform de-risk) — starter bot (`app_mention` → "hello") is done and proved the Slack↔FastAPI chain; next up is enabling Agents & AI Apps + RTS scopes on the sandbox before any detection logic lands. Full milestone plan: `PRD.md` Roadmap, snapshots in `.claude/plans/milestones.md`.
+- Build context: hackathon, 10-day budget — optimize for one complete demoable loop (M1a+M1b) over incremental safety; cut M2/M3 first if time runs short.
 
 ## Architecture North Star
 A single Python process runs two things concurrently: a Slack Bolt app in Socket Mode (background thread) and a FastAPI web server (main thread, currently just `/health`). Slack events arrive via Socket Mode, not HTTP webhooks. Future layers (per `docs/Intitial-research.md`) will add: an LLM-based decision/commitment classifier on incoming messages, an ephemeral Block Kit confirm step, an evidence-only Slack Canvas as the pointer store, and a closed-loop verifier that checks later messages against open commitments.
@@ -27,6 +28,7 @@ flowchart TD
 | ASGI server | uvicorn | 0.30.6 | Runs the FastAPI app |
 | Slack SDK | slack-bolt | 1.20.1 | Slack event handling, Socket Mode |
 | Config | python-dotenv | 1.0.1 | Loads `.env` secrets |
+| LLM | google-genai (Gemini) | TBD — add when M1a starts | Decision/commitment classifier |
 
 ## Commands
 ```bash
@@ -44,16 +46,18 @@ main.py              — entrypoint: Slack Bolt app + FastAPI app + Socket Mode 
 requirements.txt      — pip dependencies (unpinned lock)
 .env / .env.example   — Slack secrets (SLACK_BOT_TOKEN, SLACK_APP_TOKEN, SLACK_SIGNING_SECRET)
 docs/                 — product research (Intitial-research.md: full product/UX/architecture brief)
+.claude/plans/milestones.md — the M0-M3 milestone plan + live status snapshots
 venv/                 — local virtualenv (not committed logic)
 ```
 
 ## Code Rules
 ### General
-- Scope changes to the issue.
+- Scope changes to the current milestone (see `PRD.md` Roadmap / `.claude/plans/milestones.md`) — never pull in work from a later milestone "while you're in there."
 - Match existing patterns in `main.py` (plain functions, module-level Slack/FastAPI app objects — no framework classes invented yet).
-- No new libraries without checking `docs/Intitial-research.md` first (it already names the intended libraries/APIs for each future layer — Slack Canvas API, RTS `assistant.search.context`, NLI models, embeddings).
+- No new libraries without checking `docs/Intitial-research.md` first (it already names the intended libraries/APIs for each future layer — Slack Canvas API, RTS `assistant.search.context`, NLI models, embeddings). LLM calls use Gemini (`google-genai`), not Claude/OpenAI — this was a deliberate hackathon-budget choice, don't swap providers mid-build.
 - Update `.claude/reference/` when the event contract, API surface, or Slack scopes change.
-- Add tests proportional to risk — this is pre-MVP, so tests are optional for glue code but required once detection/verification logic lands.
+- Add tests proportional to risk — glue/bootstrap code stays untested; the classifier, Canvas pointer schema, and verifier logic (M1a onward) require a test per `.claude/reference/testing.md`.
+- Given the 10-day hackathon budget: prefer the smallest change that completes the current milestone's demo story over a more "correct" but slower general solution.
 
 ### Slack-specific (from `docs/Intitial-research.md` — read before touching event handling)
 - Build as an **internal** Slack app. Never call `conversations.history`/`conversations.replies` in a loop or for backfill — Tier 1 rate limits (1/min) apply to non-internal/non-Marketplace apps. Process events live via the Events API instead.
