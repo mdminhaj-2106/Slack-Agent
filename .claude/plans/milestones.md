@@ -9,7 +9,7 @@ Rule: work the milestones in order. Never start a later milestone's code before 
 ---
 
 ## M0 — Platform de-risk
-**Status: not started**
+**Status: done**
 
 Definition of done:
 - Agents & AI Apps feature enabled on the sandbox app.
@@ -20,6 +20,7 @@ Why this is first: `/why` (M1b) is architecturally dead without this. Finding ou
 
 Snapshot log:
 - 2026-07-02 — Not started. Sandbox exists, feature/scopes unconfigured.
+- 2026-07-02 — Done. Agents & AI Apps enabled, search:read.public + search:read.private granted, reinstalled. Round-trip proven: `event["action_token"]` (top-level on the app_mention event dict) passed to `assistant.search.context` returned `ok=True`. M1b can rely on this shape.
 
 ---
 

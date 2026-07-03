@@ -4,7 +4,7 @@
 - Product: Recorder — a transparent, peer-toned Slack agent that captures decisions, commitments, and blockers at the moment they're spoken, and later verifies whether they were followed through.
 - Users: Teams working in Slack who lose rationale/decisions to scattered threads and wikis that "go to be forgotten."
 - Problem: ADRs/Confluence/Notion fail because capture is a separate destination task divorced from where work happens. Recorder captures in-flow and retrieves in-flow (`/why [topic]`).
-- Phase: M0 (platform de-risk) — starter bot (`app_mention` → "hello") is done and proved the Slack↔FastAPI chain; next up is enabling Agents & AI Apps + RTS scopes on the sandbox before any detection logic lands. Full milestone plan: `PRD.md` Roadmap, snapshots in `.claude/plans/milestones.md`.
+- Phase: M0 done (platform de-risk) — Agents & AI Apps enabled, search scopes granted, `action_token` → `assistant.search.context` round-trip proven. Next: M1a (Gemini classifier + ephemeral confirm + Canvas pointer write). Full milestone plan: `PRD.md` Roadmap, snapshots in `.claude/plans/milestones.md`.
 - Build context: hackathon, 10-day budget — optimize for one complete demoable loop (M1a+M1b) over incremental safety; cut M2/M3 first if time runs short.
 
 ## Architecture North Star
