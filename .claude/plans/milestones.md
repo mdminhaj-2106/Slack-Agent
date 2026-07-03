@@ -29,7 +29,7 @@ Snapshot log:
 
 Definition of done:
 - Gemini classifier: given a Slack message, returns decision/commitment/none + confidence.
-- On high-confidence hit, an ephemeral Block Kit message posts in-thread, visible only to the author, with ✓ Log / ✗ Dismiss buttons.
+- On high-confidence hit, an ephemeral Block Kit message posts in-thread (if the message is already a reply in an active thread) or as a plain channel ephemeral otherwise, visible only to the author, with ✓ Log / ✗ Dismiss buttons. Slack silently drops ephemeral replies threaded onto a `ts` with zero real replies — never force-thread a fresh top-level message.
 - On ✓, exactly one pointer record is written to the Canvas: `channel_id`, `ts`, permalink, detected type, owner `user_id`, confidence, status. Never raw message text, never an LLM-generated sentence.
 - On ✗, nothing is written.
 - Interaction payload acked within 3 seconds; classification/Canvas write happen after the ack, not before.

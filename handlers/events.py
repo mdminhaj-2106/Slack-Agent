@@ -16,7 +16,10 @@ def process_message_async(client, event):
     text = event.get("text", "")
     ts = event.get("ts")
     channel_id = event.get("channel")
-    thread_ts = event.get("thread_ts") or ts
+    thread_ts = event.get("thread_ts")
+    # ponytail: Slack drops ephemeral messages threaded onto a ts with zero real
+    # replies, so only thread when a reply thread already exists; otherwise post
+    # as a plain (non-threaded) ephemeral, which does render.
 
     if not user_id or not text or not ts or not channel_id:
         return
