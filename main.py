@@ -15,35 +15,28 @@ What this file does, in plain terms:
 import os
 import threading
 import logging
-
-from dotenv import load_dotenv
 from fastapi import FastAPI
 import uvicorn
 
 from slack_bolt import App as SlackApp
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
-# ---- Step 1: load secrets from .env ----
-load_dotenv()
-
-BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
-APP_TOKEN = os.environ.get("SLACK_APP_TOKEN")
-SIGNING_SECRET = os.environ.get("SLACK_SIGNING_SECRET")
-
-if not BOT_TOKEN or not APP_TOKEN:
-    raise RuntimeError(
-        "Missing SLACK_BOT_TOKEN or SLACK_APP_TOKEN. "
-        "Copy .env.example to .env and fill in your real values."
-    )
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("recorder")
 
+from config import settings
+from handlers import register_handlers
+
 # ---- Step 2: create the Slack Bolt app ----
 slack_app = SlackApp(
-    token=BOT_TOKEN,
-    signing_secret=SIGNING_SECRET,
+    token=settings.SLACK_BOT_TOKEN,
+    signing_secret=settings.SLACK_SIGNING_SECRET,
 )
+
+# Register Slack listeners
+register_handlers(slack_app)
+
+
 
 
 # ---- Step 3: our first listener — just prove the bot is alive ----
@@ -82,8 +75,12 @@ def start_slack_socket_mode():
     long-running connection, so it needs its own thread — otherwise
     it would block FastAPI from starting.
     """
-    handler = SocketModeHandler(slack_app, APP_TOKEN)
-    handler.start()  # this blocks forever, listening for Slack events
+    import time
+    handler = SocketModeHandler(slack_app, settings.SLACK_APP_TOKEN)
+    handler.connect()  # establishes the connection without registering signals
+    while True:
+        time.sleep(3600)  # blocks the thread to keep the handler in scope
+
 
 
 @api.on_event("startup")

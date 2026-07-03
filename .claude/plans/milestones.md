@@ -25,7 +25,7 @@ Snapshot log:
 ---
 
 ## M1a — Capture (**the real MVP**)
-**Status: not started** — blocked by nothing (can start in parallel with M0 for the classifier/confirm plumbing, but the Canvas write and full loop don't need RTS at all)
+**Status: done** — blocked by nothing (can start in parallel with M0 for the classifier/confirm plumbing, but the Canvas write and full loop don't need RTS at all)
 
 Definition of done:
 - Gemini classifier: given a Slack message, returns decision/commitment/none + confidence.
@@ -38,6 +38,8 @@ Why this is the MVP, not the old starter: this is the first point where the actu
 
 Snapshot log:
 - 2026-07-02 — Not started.
+- 2026-07-03 — Done. Implemented LangGraph + LangChain structured classification, ephemeral Block Kit confirm/dismiss actions, and secure Canvas pointer writes. Configured with a dedicated config.py settings class and modular root handlers/, slack/, and ai/ folders. All compilation checks pass.
+
 
 ---
 
