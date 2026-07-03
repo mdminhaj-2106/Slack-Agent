@@ -42,7 +42,7 @@ def write_pointer_to_canvas(client: WebClient, canvas_id: str, pointer: PointerR
             return False
             
     except SlackApiError as e:
-        logger.error(f"Slack API Error in write_pointer_to_canvas: {e.response.get('error', e)}")
+        logger.error(f"Slack API Error in write_pointer_to_canvas: {e.response.data}")
         return False
     except Exception as e:
         logger.error(f"Unexpected error in write_pointer_to_canvas: {e}")
