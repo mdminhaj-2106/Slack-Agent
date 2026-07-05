@@ -44,7 +44,7 @@ Snapshot log:
 ---
 
 ## M1b — Retrieval
-**Status: not started** — blocked by M0
+**Status: code complete, pending live smoke test** — blocked by M0 (M0 done)
 
 Definition of done:
 - `/why [topic]` works when triggered via `app_mention` or DM to the bot (not a slash command — no `action_token` there).
@@ -54,6 +54,7 @@ Definition of done:
 
 Snapshot log:
 - 2026-07-02 — Not started.
+- 2026-07-04 — `handlers/retrieval.py` implemented as sole `app_mention` owner: "why"-keyword detection, `assistant.search.context` call using the event's `action_token`, top-5 permalink reply (author/channel only, never `content`), usage-hint and no-evidence-found replies. Old `main.py` "hello" handler removed. `python -m py_compile` and `test_retrieval.py` pass. Manual live `@mention` smoke test in the sandbox workspace still pending (needs a running instance restarted with this code + a human posting the mention).
 
 ---
 

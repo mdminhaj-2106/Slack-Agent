@@ -4,8 +4,8 @@ Recorder — starter bot server.
 What this file does, in plain terms:
 1. Loads your three secrets from a .env file.
 2. Sets up a Slack Bolt app (this is what actually talks to Slack).
-3. Adds ONE listener: when someone @mentions Recorder, it replies "hello".
-    This is just to prove the whole chain works before we add real logic.
+3. Registers Slack listeners (message capture, action buttons, /why retrieval)
+    via handlers/register_handlers.
 4. Wraps it inside a FastAPI app, so we have a proper web server
     (with a /health endpoint) that we can build on later.
 5. Runs Slack's "Socket Mode" connection in a background thread, so
@@ -35,31 +35,7 @@ slack_app = SlackApp(
 
 # Register Slack listeners
 register_handlers(slack_app)
-
-
-
-
-# ---- Step 3: our first listener — just prove the bot is alive ----
-@slack_app.event("app_mention")
-def handle_mention(event, say):
-    """
-    This function runs every time someone @mentions Recorder anywhere
-    it's been added. Right now it just says hello back in the same thread.
-    Later, this is where decision/commitment detection will plug in.
-    """
-    user = event.get("user")
-    text = event.get("text", "")
-    thread_ts = event.get("ts")  # replying in-thread, not as a new message
-
-    logger.info(f"Got a mention from {user}: {text}")
-
-    say(
-        text=f"👋 Hey <@{user}>, I heard you. (Recorder is alive and listening.)",
-        thread_ts=thread_ts,
-    )
-
-
-# ---- Step 4: wrap everything in a FastAPI app ----
+# ---- Step 3: wrap everything in a FastAPI app ----
 api = FastAPI(title="Recorder Bot")
 
 
