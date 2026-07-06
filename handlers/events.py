@@ -53,7 +53,8 @@ def process_message_async(client, event):
             "type": res.category,
             "owner_id": res.owner_id or user_id,
             "confidence": res.confidence,
-            "status": "open" if res.category == "commitment" else "logged"
+            "status": "open" if res.category == "commitment" else "logged",
+            "due_date_hint": res.due_date_hint
         }
         metadata_str = json.dumps(metadata)
         
