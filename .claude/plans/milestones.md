@@ -59,7 +59,7 @@ Snapshot log:
 ---
 
 ## M2 — Closed-loop verifier
-**Status: not started** — blocked by M1a (needs confirmed commitments to verify)
+**Status: done** — blocked by M1a (needs confirmed commitments to verify)
 
 Definition of done:
 - Confirmed commitments get a scheduled follow-up at/after their due signal.
@@ -69,6 +69,8 @@ Definition of done:
 
 Snapshot log:
 - 2026-07-02 — Not started.
+- 2026-07-06 — Done. Implemented in-process threading.Timer scheduling, Slack thread evidence collection (via conversations_replies and reactions_get), Gemini NLI entailment evaluation, private DM nudge delivery with interactive buttons, and in-place Canvas pointer status updates. Unit tests (7/7) pass.
+
 
 ---
 
