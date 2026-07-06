@@ -66,3 +66,71 @@ def get_dismissed_blocks() -> list[dict]:
             }
         }
     ]
+
+def get_nudge_blocks(owner_id: str, commitment_permalink: str, payload_value: str) -> list[dict]:
+    """
+    Generates Block Kit blocks for the private DM follow-up nudge.
+    """
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"👋 Hey <@{owner_id}>, I couldn't find evidence of your commitment in the thread. Did you finish this?\n<{commitment_permalink}|View original commitment>"
+            }
+        },
+        {
+            "type": "actions",
+            "block_id": "recorder_nudge_actions",
+            "elements": [
+                {
+                    "type": "button",
+                    "action_id": "commitment_done",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "✓ Done"
+                    },
+                    "style": "primary",
+                    "value": payload_value
+                },
+                {
+                    "type": "button",
+                    "action_id": "commitment_snooze",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "↺ Snooze 24h"
+                    },
+                    "value": payload_value
+                }
+            ]
+        }
+    ]
+
+def get_nudge_completed_blocks() -> list[dict]:
+    """
+    Blocks replacing the nudge prompt when user marks it as done.
+    """
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "✅ *Great job!* I've marked this commitment as kept in the Canvas."
+            }
+        }
+    ]
+
+def get_nudge_snoozed_blocks() -> list[dict]:
+    """
+    Blocks replacing the nudge prompt when user snoozes it.
+    """
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "⏳ *Snoozed.* I will follow up again in 24 hours."
+            }
+        }
+    ]
+
