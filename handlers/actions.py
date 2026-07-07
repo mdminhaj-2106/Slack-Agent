@@ -49,9 +49,14 @@ def process_confirm_async(client, respond, user_id: str, action_value: str):
         logger.info(f"Successfully wrote pointer to Canvas. Updating ephemeral UI...")
         success_blocks = get_logged_success_blocks(user_id, pointer.type)
         respond(blocks=success_blocks, replace_original=True)
+        # Schedule verification for commitment type pointers
+        if pointer.type == "commitment":
+            from handlers.verifier import schedule_verification
+            schedule_verification(client, pointer)
     else:
         logger.error("Failed to append pointer entry to Canvas.")
         respond(text="❌ Error: Canvas write failed. Please check app permissions.")
+
 
 
 def register_action_handlers(slack_app: App):

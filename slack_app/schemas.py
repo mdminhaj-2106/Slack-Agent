@@ -13,3 +13,4 @@ class PointerRecord(BaseModel):
     owner_id: str = Field(description="Slack User ID of the decision maker or commitment owner")
     confidence: float = Field(description="Confidence score of classification")
     status: str = Field(default="logged", description="Status: 'logged' (for decisions) or 'open' (for commitments)")
+    due_date_hint: Optional[str] = Field(default=None, description="Optional deadline hint text for commitments")

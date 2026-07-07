@@ -47,6 +47,6 @@ flowchart TD
 | M1a | `canvas.py` | `canvases.create`/`canvases.edit`/`canvases.sections.lookup` — writes pointer records only | Must reject any write containing raw message text or an LLM-generated sentence |
 | M1a | `handlers.py` | `message`/`app_mention` listener → classifier → ephemeral Block Kit confirm → on confirm, `canvas.py` write | Long-running work (Gemini call, Canvas write) must not block the ack |
 | M1b | `retrieval.py` | **Implemented.** `/why` flow: `app_mention` → `action_token` → `assistant.search.context` → ranked permalinks | Cannot be called outside an event payload that carries an `action_token`; never reads the `content` field |
-| M2 | `verifier.py` | Scheduled follow-up, evidence search + NLI entailment, status updates on pointer records | Only ever nudges privately; never posts publicly on behalf of a user |
+| M2 | `verifier.py` | **Implemented.** Scheduled follow-up, evidence search + NLI entailment, status updates on pointer records | Only ever nudges privately; never posts publicly on behalf of a user |
 
 Each new module is added only when its milestone starts — don't scaffold ahead of the current milestone (see Code Rules in `CONSTITUTION.md`).

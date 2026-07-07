@@ -26,12 +26,9 @@ No FastAPI-side auth exists yet. Slack Bolt validates the signing secret interna
 ## Confirmed Slack-side surface (not HTTP — via Socket Mode events)
 | Milestone | Trigger | Surface |
 |-----------|---------|---------|
-| M1b | `app_mention` containing "why" | `handlers/retrieval.py` calls `client.api_call("assistant.search.context", ...)` with the event's `action_token`, replies in-thread with the top 5 ranked permalinks (+ author/channel), or a "no evidence found" / usage-hint message. Never forwards the response's `content` field. |
-
-## Planned Slack-side surface (not HTTP — via Socket Mode events, per milestone)
-| Milestone | Trigger | Surface |
-|-----------|---------|---------|
 | M1a | `message`/`app_mention` event, high-confidence classification | Ephemeral Block Kit message with ✓/✗ buttons — visible only to the author |
-| M2 | Scheduled follow-up on an unverified commitment | Private ephemeral/DM nudge to the owner only |
+| M1b | `app_mention` containing "why" | `handlers/retrieval.py` calls `client.api_call("assistant.search.context", ...)` with the event's `action_token`, replies in-thread with the top 5 ranked permalinks (+ author/channel), or a "no evidence found" / usage-hint message. Never forwards the response's `content` field. |
+| M2 | Scheduled follow-up on an unverified commitment | Private DM nudge to the owner with interactive ✓ Done / ↺ Snooze 24h buttons |
 
 No new FastAPI HTTP endpoints are planned for M0–M3 — all product surface is Slack-native.
+
