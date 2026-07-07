@@ -24,6 +24,9 @@ def schedule_verification(client: WebClient, pointer: PointerRecord):
     If pointer status is 'snoozed', schedules for snooze duration.
     Otherwise, parses the due_date_hint.
     """
+    # ponytail: in-memory threading.Timer only, lost on process restart —
+    # nothing reconstructs pending verifications from the Canvas on startup.
+    # Fine for the hackathon demo; add Canvas-scan-on-boot if uptime matters.
     now_utc = datetime.now(timezone.utc)
     
     if pointer.status == "snoozed":
